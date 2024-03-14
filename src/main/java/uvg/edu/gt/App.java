@@ -9,7 +9,6 @@ import uvg.edu.gt.utils.LispFileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class App {
 
@@ -63,23 +62,36 @@ public class App {
 
     private static void evaluarCodigoLisp(String codigoLisp) {
         List<String> tokens = Lexer.analizar(codigoLisp);
+<<<<<<< HEAD
 
+=======
+
+>>>>>>> ihan
         // Si la lista de tokens está vacía, muestra un error
         if (tokens.isEmpty()) {
             System.out.println("Error: Expresión Lisp vacía");
             return;
         }
+<<<<<<< HEAD
 
+=======
+
+>>>>>>> ihan
         // Si la expresión comienza con un paréntesis, eliminamos el primer y último token
         if (tokens.get(0).equals("(") && tokens.get(tokens.size() - 1).equals(")")) {
             tokens = tokens.subList(1, tokens.size() - 1);
         }
+<<<<<<< HEAD
 
+=======
+
+>>>>>>> ihan
         // Si la lista de tokens ahora está vacía, muestra un error
         if (tokens.isEmpty()) {
             System.out.println("Error: Expresión Lisp vacía");
             return;
         }
+<<<<<<< HEAD
 
         if (tokens.get(0).equals("defun")) {
             // Lógica para definir la función
@@ -121,6 +133,21 @@ public class App {
             }
         }
 
+=======
+
+        // Si el primer token es una comilla simple ('), o la palabra "quote", es una llamada a la función quote
+        if (tokens.get(0).equals("'") || tokens.get(0).equalsIgnoreCase("quote")) {
+            // Imprimir la expresión sin evaluar ningún token
+            if (tokens.size() == 1) {
+                System.out.println("Error: La expresión 'quote' debe tener un argumento");
+                return;
+            }
+            String argumento = String.join(" ", tokens.subList(1, tokens.size()));
+            System.out.println("Resultado de la evaluación: " + argumento);
+            return;
+        }
+
+>>>>>>> ihan
         // Si el primer token es un operador válido, realiza la operación aritmética
         if ("+-*/".contains(tokens.get(0))) {
             String operador = tokens.get(0);
@@ -155,6 +182,15 @@ public class App {
             }
 
             System.out.println("Resultado de la evaluación: " + resultado);
+        } else if (tokens.get(0).equals("'")) {
+            // Si el primer token es "'", implementamos el comportamiento de 'quote'
+            // Devolvemos el argumento sin evaluar
+            if (tokens.size() == 1) {
+                System.out.println("Error: La expresión 'quote' debe tener un argumento");
+                return;
+            }
+            String argumento = String.join(" ", tokens.subList(1, tokens.size()));
+            System.out.println("Resultado de la evaluación: " + argumento);
         } else {
             // Si no es una operación aritmética, intenta evaluar como llamada de función
             String nombreFuncion = tokens.get(0);
@@ -191,5 +227,8 @@ public class App {
             }
         }
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> ihan
 }

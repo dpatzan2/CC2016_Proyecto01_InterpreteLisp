@@ -19,21 +19,22 @@ public class FunctionDefinition {
      * @param nombre    El nombre de la función.
      * @param parametros Los nombres de los parámetros de la función.
      * @param cuerpo    La expresión que representa el cuerpo de la función.
-     * @throws IllegalArgumentException si el nombre de la función ya está en uso o si la lista de parámetros está vacía.
+     * @throws IllegalArgumentException si el nombre de la función ya está en uso.
      */
     public static void definirFuncion(String nombre, List<String> parametros, List<Object> cuerpo) {
         if (funciones.containsKey(nombre)) {
             throw new IllegalArgumentException("La función '" + nombre + "' ya está definida");
         }
 
-        if (parametros.isEmpty()) {
-            throw new IllegalArgumentException("La lista de parámetros no puede estar vacía");
-        }
-
         funciones.put(nombre, args -> {
             Map<String, Object> entornoLocal = new HashMap<>();
-            for (int i = 0; i < parametros.size(); i++) {
-                entornoLocal.put(parametros.get(i), args.get(i));
+            if (parametros != null) {
+                if (args.size() != parametros.size()) {
+                    throw new IllegalArgumentException("Número incorrecto de argumentos para la función '" + nombre + "'");
+                }
+                for (int i = 0; i < parametros.size(); i++) {
+                    entornoLocal.put(parametros.get(i), args.get(i));
+                }
             }
             // Evaluar el cuerpo de la función con el nuevo entorno
             // Aquí debería ir la lógica para evaluar la expresión 'cuerpo'
@@ -55,15 +56,10 @@ public class FunctionDefinition {
             throw new IllegalArgumentException("La función '" + nombre + "' no está definida");
         }
 
-        if (args.size() != funcion.apply(List.of()).toString().split(",").length) {
-            throw new IllegalArgumentException("Número incorrecto de argumentos para la función '" + nombre + "'");
-        }
-
         return funcion.apply(args);
     }
 
     public static boolean llamarFuncionExiste(String nombre) {
         return funciones.containsKey(nombre);
     }
-    
 }

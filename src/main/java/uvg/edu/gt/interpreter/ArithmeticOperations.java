@@ -15,8 +15,8 @@ public class ArithmeticOperations {
      * @return El resultado de la suma.
      * @throws IllegalArgumentException si la lista es nula o vacía, o si algún elemento no es un número.
      */
-    public static int sumar(List<Object> args) {
-        if (args == null || args.isEmpty()) {
+    public static int sumar(List<Integer> args) {
+        if (args == null || args.isEmpty()) {   
             throw new IllegalArgumentException("La lista de argumentos no puede ser nula o vacía");
         }
 
@@ -37,7 +37,7 @@ public class ArithmeticOperations {
      * @return El resultado de la resta.
      * @throws IllegalArgumentException si la lista es nula o vacía, o si algún elemento no es un número.
      */
-    public static int restar(List<Object> args) {
+    public static int restar(List<Integer> args) {
         if (args == null || args.isEmpty()) {
             throw new IllegalArgumentException("La lista de argumentos no puede ser nula o vacía");
         }
@@ -65,7 +65,7 @@ public class ArithmeticOperations {
      * @return El resultado de la multiplicación.
      * @throws IllegalArgumentException si la lista es nula o vacía, o si algún elemento no es un número.
      */
-    public static int multiplicar(List<Object> args) {
+    public static int multiplicar(List<Integer> args) {
         if (args == null || args.isEmpty()) {
             throw new IllegalArgumentException("La lista de argumentos no puede ser nula o vacía");
         }
@@ -88,7 +88,7 @@ public class ArithmeticOperations {
      * @throws IllegalArgumentException si la lista es nula o vacía, si algún elemento no es un número,
      *                                  o si se intenta dividir por cero.
      */
-    public static double dividir(List<Object> args) {
+    public static double dividir(List<Integer> args) {
         if (args == null || args.isEmpty()) {
             throw new IllegalArgumentException("La lista de argumentos no puede ser nula o vacía");
         }

@@ -18,6 +18,12 @@ public class InputReader {
         return scanner.nextLine();
     }
 
+    
+    public static int leerEntero() {
+        String input = leerLinea().trim();
+        return Integer.parseInt(input);
+    }
+
     /**
      * Cierra el objeto Scanner utilizado para leer la entrada del usuario.
      * Se recomienda llamar a este método al finalizar la lectura de la entrada.

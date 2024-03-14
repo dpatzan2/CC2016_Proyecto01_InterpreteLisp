@@ -61,4 +61,9 @@ public class FunctionDefinition {
 
         return funcion.apply(args);
     }
+
+    public static boolean llamarFuncionExiste(String nombre) {
+        return funciones.containsKey(nombre);
+    }
+    
 }

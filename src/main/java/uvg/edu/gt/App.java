@@ -81,6 +81,34 @@ public class App {
             return;
         }
 
+        // Si la primera expresión es 'defun', definir una nueva función
+        if (tokens.get(0).equals("defun")) {
+            // Obtener el nombre de la función
+            String nombreFuncion = tokens.get(1);
+
+            // Obtener los parámetros de la función
+            List<String> parametros = new ArrayList<>();
+            int index = 2;
+            while (!tokens.get(index).equals("(")) {
+                parametros.add(tokens.get(index));
+                index++;
+            }
+
+            // Obtener el cuerpo de la función
+            List<Object> cuerpo = new ArrayList<>();
+            index++;
+            while (!tokens.get(index).equals(")")) {
+                cuerpo.add(tokens.get(index));
+                index++;
+            }
+
+            // Definir la función en el intérprete Lisp
+            FunctionDefinition.definirFuncion(nombreFuncion, parametros, cuerpo);
+
+            System.out.println("Función definida: " + nombreFuncion);
+            return;
+        }
+
         // Si el primer token es un operador válido, realiza la operación aritmética
         if ("+-*/".contains(tokens.get(0))) {
             String operador = tokens.get(0);

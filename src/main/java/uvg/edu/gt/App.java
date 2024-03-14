@@ -80,6 +80,46 @@ public class App {
             return;
         }
 
+        if (tokens.get(0).equals("defun")) {
+            // Lógica para definir la función
+            // Aquí debería ir la lógica para analizar y ejecutar la definición de función
+            System.out.println("Función definida: " + tokens.get(1));
+        } else {
+            // Si el primer token no es una definición de función, intentamos evaluar como llamada de función
+            String nombreFuncion = tokens.get(0);
+            if (FunctionDefinition.llamarFuncionExiste(nombreFuncion)) {
+                // Si es una llamada de función, se evalúa utilizando el intérprete Lisp
+                List<Object> args = new ArrayList<>();
+                for (int i = 1; i < tokens.size(); i++) {
+                    if (tokens.get(i).equals("(")) {
+                        // Encontramos una expresión dentro de paréntesis, evaluamos recursivamente
+                        StringBuilder subExpresion = new StringBuilder();
+                        int nivelParentesis = 1;
+                        while (nivelParentesis != 0 && i + 1 < tokens.size()) {
+                            i++;
+                            String token = tokens.get(i);
+                            if (token.equals("(")) {
+                                nivelParentesis++;
+                            } else if (token.equals(")")) {
+                                nivelParentesis--;
+                            }
+                            subExpresion.append(token).append(" ");
+                        }
+                        args.add(subExpresion.toString().trim());
+                    } else {
+                        args.add(tokens.get(i));
+                    }
+                }
+
+                // Evaluar la llamada de función
+                Object resultado = FunctionDefinition.llamarFuncion(nombreFuncion, args);
+                System.out.println("Resultado de la evaluación: " + resultado);
+            } else {
+                // Si no es una llamada de función válida, muestra un error
+                System.out.println("Error: Función no definida - " + nombreFuncion);
+            }
+        }
+
         // Si el primer token es una comilla simple ('), o la palabra "quote", es una llamada a la función quote
         if (tokens.get(0).equals("'") || tokens.get(0).equalsIgnoreCase("quote")) {
             // Imprimir la expresión sin evaluar ningún token

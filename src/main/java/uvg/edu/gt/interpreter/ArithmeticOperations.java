@@ -15,99 +15,53 @@ public class ArithmeticOperations {
      * @return El resultado de la suma.
      * @throws IllegalArgumentException si la lista es nula o vacía, o si algún elemento no es un número.
      */
-    public static int sumar(List<Integer> args) {
-        if (args == null || args.isEmpty()) {   
-            throw new IllegalArgumentException("La lista de argumentos no puede ser nula o vacía");
+    public static double sumar(List<Double> args) {
+        if (args == null || args.isEmpty()) {
+            throw new IllegalArgumentException("The list of arguments cannot be null or empty");
         }
 
-        int suma = 0;
-        for (Object arg : args) {
-            if (!(arg instanceof Integer)) {
-                throw new IllegalArgumentException("Todos los elementos de la lista deben ser números enteros");
-            }
-            suma += (int) arg;
+        double suma = 0;
+        for (double arg : args) {
+            suma += arg;
         }
         return suma;
     }
 
-    /**
-     * Realiza la resta de los elementos de la lista especificada.
-     *
-     * @param args La lista de números para restar.
-     * @return El resultado de la resta.
-     * @throws IllegalArgumentException si la lista es nula o vacía, o si algún elemento no es un número.
-     */
-    public static int restar(List<Integer> args) {
+    public static double restar(List<Double> args) {
         if (args == null || args.isEmpty()) {
-            throw new IllegalArgumentException("La lista de argumentos no puede ser nula o vacía");
+            throw new IllegalArgumentException("The list of arguments cannot be null or empty");
         }
 
-        int resta = 0;
-        boolean primerElemento = true;
-        for (Object arg : args) {
-            if (!(arg instanceof Integer)) {
-                throw new IllegalArgumentException("Todos los elementos de la lista deben ser números enteros");
-            }
-            if (primerElemento) {
-                resta = (int) arg;
-                primerElemento = false;
-            } else {
-                resta -= (int) arg;
-            }
+        double resta = args.get(0);
+        for (int i = 1; i < args.size(); i++) {
+            resta -= args.get(i);
         }
         return resta;
     }
 
-    /**
-     * Realiza la multiplicación de los elementos de la lista especificada.
-     *
-     * @param args La lista de números para multiplicar.
-     * @return El resultado de la multiplicación.
-     * @throws IllegalArgumentException si la lista es nula o vacía, o si algún elemento no es un número.
-     */
-    public static int multiplicar(List<Integer> args) {
+    public static double multiplicar(List<Double> args) {
         if (args == null || args.isEmpty()) {
-            throw new IllegalArgumentException("La lista de argumentos no puede ser nula o vacía");
+            throw new IllegalArgumentException("The list of arguments cannot be null or empty");
         }
 
-        int producto = 1;
-        for (Object arg : args) {
-            if (!(arg instanceof Integer)) {
-                throw new IllegalArgumentException("Todos los elementos de la lista deben ser números enteros");
-            }
-            producto *= (int) arg;
+        double producto = 1;
+        for (double arg : args) {
+            producto *= arg;
         }
         return producto;
     }
 
-    /**
-     * Realiza la división de los elementos de la lista especificada.
-     *
-     * @param args La lista de números para dividir.
-     * @return El resultado de la división.
-     * @throws IllegalArgumentException si la lista es nula o vacía, si algún elemento no es un número,
-     *                                  o si se intenta dividir por cero.
-     */
-    public static double dividir(List<Integer> args) {
+    public static double dividir(List<Double> args) {
         if (args == null || args.isEmpty()) {
-            throw new IllegalArgumentException("La lista de argumentos no puede ser nula o vacía");
+            throw new IllegalArgumentException("The list of arguments cannot be null or empty");
         }
 
-        double division = 0;
-        boolean primerElemento = true;
-        for (Object arg : args) {
-            if (!(arg instanceof Integer)) {
-                throw new IllegalArgumentException("Todos los elementos de la lista deben ser números enteros");
+        double division = args.get(0);
+        for (int i = 1; i < args.size(); i++) {
+            if (args.get(i) == 0) {
+                throw new IllegalArgumentException("Cannot divide by zero");
             }
-            if (primerElemento) {
-                division = (int) arg;
-                primerElemento = false;
-            } else {
-                if ((int) arg == 0) {
-                    throw new IllegalArgumentException("No se puede dividir por cero");
-                }
-                division /= (int) arg;
-            }
+            division /= args.get(i);
         }
         return division;
     }

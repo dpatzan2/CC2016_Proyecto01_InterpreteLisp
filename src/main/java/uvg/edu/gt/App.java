@@ -63,39 +63,39 @@ public class App {
 
     private static void evaluarCodigoLisp(String codigoLisp) {
         List<String> tokens = Lexer.analizar(codigoLisp);
-    
+
         // Si la lista de tokens está vacía, muestra un error
         if (tokens.isEmpty()) {
             System.out.println("Error: Expresión Lisp vacía");
             return;
         }
-    
+
         // Si la expresión comienza con un paréntesis, eliminamos el primer y último token
         if (tokens.get(0).equals("(") && tokens.get(tokens.size() - 1).equals(")")) {
             tokens = tokens.subList(1, tokens.size() - 1);
         }
-    
+
         // Si la lista de tokens ahora está vacía, muestra un error
         if (tokens.isEmpty()) {
             System.out.println("Error: Expresión Lisp vacía");
             return;
         }
-    
+
         // Si el primer token es un operador válido, realiza la operación aritmética
         if ("+-*/".contains(tokens.get(0))) {
             String operador = tokens.get(0);
-            List<Integer> operandos = new ArrayList<>();
+            List<Double> operandos = new ArrayList<>();
             for (int i = 1; i < tokens.size(); i++) {
                 try {
-                    operandos.add(Integer.parseInt(tokens.get(i)));
+                    operandos.add(Double.parseDouble(tokens.get(i)));
                 } catch (NumberFormatException e) {
-                    System.out.println("Error: Los tokens no son números enteros válidos.");
+                    System.out.println("Error: Los tokens no son números decimales válidos.");
                     return;
                 }
             }
-    
+
             // Realizar la operación correspondiente
-            int resultado;
+            double resultado;
             switch (operador) {
                 case "+":
                     resultado = ArithmeticOperations.sumar(operandos);
@@ -107,13 +107,13 @@ public class App {
                     resultado = ArithmeticOperations.multiplicar(operandos);
                     break;
                 case "/":
-                    resultado = (int) ArithmeticOperations.dividir(operandos);
+                    resultado = ArithmeticOperations.dividir(operandos);
                     break;
                 default:
                     System.out.println("Error: Operador no reconocido");
                     return;
             }
-    
+
             System.out.println("Resultado de la evaluación: " + resultado);
         } else {
             // Si no es una operación aritmética, intenta evaluar como llamada de función
@@ -141,7 +141,7 @@ public class App {
                         args.add(tokens.get(i));
                     }
                 }
-    
+
                 // Evaluar la llamada de función
                 Object resultado = FunctionDefinition.llamarFuncion(nombreFuncion, args);
                 System.out.println("Resultado de la evaluación: " + resultado);
@@ -151,7 +151,5 @@ public class App {
             }
         }
     }
-    
-
 
 }

@@ -84,18 +84,18 @@ public class App {
         // Si el primer token es un operador válido, realiza la operación aritmética
         if ("+-*/".contains(tokens.get(0))) {
             String operador = tokens.get(0);
-            List<Integer> operandos = new ArrayList<>();
+            List<Double> operandos = new ArrayList<>();
             for (int i = 1; i < tokens.size(); i++) {
                 try {
-                    operandos.add(Integer.parseInt(tokens.get(i)));
+                    operandos.add(Double.parseDouble(tokens.get(i)));
                 } catch (NumberFormatException e) {
-                    System.out.println("Error: Los tokens no son números enteros válidos.");
+                    System.out.println("Error: Los tokens no son números decimales válidos.");
                     return;
                 }
             }
     
             // Realizar la operación correspondiente
-            int resultado;
+            double resultado;
             switch (operador) {
                 case "+":
                     resultado = ArithmeticOperations.sumar(operandos);
@@ -107,7 +107,7 @@ public class App {
                     resultado = ArithmeticOperations.multiplicar(operandos);
                     break;
                 case "/":
-                    resultado = (int) ArithmeticOperations.dividir(operandos);
+                    resultado = ArithmeticOperations.dividir(operandos);
                     break;
                 default:
                     System.out.println("Error: Operador no reconocido");
@@ -152,6 +152,4 @@ public class App {
         }
     }
     
-
-
 }

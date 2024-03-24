@@ -1,23 +1,43 @@
 package uvg.edu.gt.interpreter;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * La clase {@code Conditional} proporciona métodos para evaluar expresiones condicionales
- * en el lenguaje de programación LISP, como la instrucción COND.
- */
 public class Conditional {
 
-    /**
-     * Evalúa la expresión condicional COND.
-     *
-     * @param condicionales La lista de condiciones y expresiones asociadas.
-     * @return El resultado de la primera expresión asociada cuya condición se evalúa como verdadera,
-     *         o {@code null} si ninguna condición es verdadera.
-     * @throws IllegalArgumentException si las condiciones no están en el formato correcto.
-     */
+    // Métodos para evaluar predicados
+
+    public static boolean evaluarAtom(Object objeto) {
+        return !(objeto instanceof List);
+    }
+
+    public static boolean evaluarList(Object objeto) {
+        return objeto instanceof List;
+    }
+
+    public static boolean evaluarEqual(List<Object> args) {
+        if (args.size() < 2) {
+            throw new IllegalArgumentException("La expresión EQUAL debe tener al menos dos argumentos");
+        }
+        Object primerArgumento = args.get(0);
+        for (int i = 1; i < args.size(); i++) {
+            if (!Objects.equals(primerArgumento, args.get(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean evaluarMenorQue(Double num1, Double num2) {
+        return num1 < num2;
+    }
+
+    public static boolean evaluarMayorQue(Double num1, Double num2) {
+        return num1 > num2;
+    }
+
+    // Método para evaluar COND
+
     public static Object evaluarCond(List<List<Object>> condicionales) {
         for (List<Object> condicional : condicionales) {
             if (condicional.size() < 2) {
@@ -38,12 +58,8 @@ public class Conditional {
         return null;
     }
 
-    /**
-     * Evalúa una condición del COND.
-     *
-     * @param condicion La condición a evaluar.
-     * @return {@code true} si la condición es verdadera, {@code false} en caso contrario.
-     */
+    // Método auxiliar para evaluar condición
+
     private static boolean evaluarCondicion(Object condicion) {
         if (condicion instanceof Boolean) {
             // Si la condición es un valor booleano, simplemente devuelve su valor
@@ -57,12 +73,8 @@ public class Conditional {
         }
     }
 
-    /**
-     * Evalúa una expresión predicado.
-     *
-     * @param predicado La expresión predicado a evaluar.
-     * @return {@code true} si la expresión predicado se evalúa como verdadera, {@code false} en caso contrario.
-     */
+    // Método auxiliar para evaluar expresión predicado
+
     public static boolean evaluarPredicado(List<Object> predicado) {
         // Si el predicado está vacío, se considera falso
         if (predicado.isEmpty()) {
@@ -120,7 +132,6 @@ public class Conditional {
                 } else {
                     throw new IllegalArgumentException("Los argumentos de la expresión > deben ser números");
                 }
-                // Puedes agregar más casos para otros operadores según sea necesario
             default:
                 // Si el operador no es reconocido, se considera falso
                 return false;

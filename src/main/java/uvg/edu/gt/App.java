@@ -132,13 +132,15 @@ public class App {
             System.out.println("Resultado de la evaluación: " + esLista);
         } else if (tokens.get(0).equals("EQUAL")) {
             // Implementa la lógica para evaluar el predicado EQUAL
-            if (tokens.size() != 3) {
-                System.out.println("Error: La expresión EQUAL debe tener dos argumentos");
+            if (tokens.size() < 3) {
+                System.out.println("Error: La expresión EQUAL debe tener al menos dos argumentos");
                 return;
             }
-            String arg1 = tokens.get(1);
-            String arg2 = tokens.get(2);
-            boolean sonIguales = arg1.equals(arg2);
+            List<Object> args = new ArrayList<>();
+            for (int i = 1; i < tokens.size(); i++) {
+                args.add(tokens.get(i));
+            }
+            boolean sonIguales = Conditional.evaluarEqual(args);
             System.out.println("Resultado de la evaluación: " + sonIguales);
         } else if (tokens.get(0).equals("<")) {
             // Implementa la lógica para evaluar el predicado <
@@ -148,7 +150,7 @@ public class App {
             }
             double num1 = Double.parseDouble(tokens.get(1));
             double num2 = Double.parseDouble(tokens.get(2));
-            boolean esMenor = num1 < num2;
+            boolean esMenor = Conditional.evaluarMenorQue(num1, num2);
             System.out.println("Resultado de la evaluación: " + esMenor);
         } else if (tokens.get(0).equals(">")) {
             // Implementa la lógica para evaluar el predicado >
@@ -158,7 +160,7 @@ public class App {
             }
             double num1 = Double.parseDouble(tokens.get(1));
             double num2 = Double.parseDouble(tokens.get(2));
-            boolean esMayor = num1 > num2;
+            boolean esMayor = Conditional.evaluarMayorQue(num1, num2);
             System.out.println("Resultado de la evaluación: " + esMayor);
         } else {
             System.out.println("Error: Operación no reconocida");
@@ -329,7 +331,6 @@ public class App {
 
         return condicionales;
     }
-
     /**
      * Evalúa una lista de expresiones condicionales (condicionales).
      *
@@ -339,10 +340,12 @@ public class App {
         for (List<Object> condicional : condicionales) {
             boolean condicion = Conditional.evaluarPredicado(Collections.singletonList(condicional.get(0)));
             if (condicion) {
+                // Si la condición es verdadera, imprime el resultado de la expresión asociada
                 System.out.println("Resultado de la evaluación: " + condicional.get(1));
                 return;
             }
         }
+        // Si ninguna condición es verdadera, muestra un error
         System.out.println("Error: Ninguna condición es verdadera en la expresión COND");
     }
 

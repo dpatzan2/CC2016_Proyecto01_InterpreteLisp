@@ -337,16 +337,21 @@ public class App {
      * @param condicionales Lista de expresiones condicionales.
      */
     private static void evaluarExpresionCond(List<List<Object>> condicionales) {
+        boolean algunaCondicionVerdadera = false;
         for (List<Object> condicional : condicionales) {
             boolean condicion = Conditional.evaluarPredicado(Collections.singletonList(condicional.get(0)));
             if (condicion) {
                 // Si la condición es verdadera, imprime el resultado de la expresión asociada
                 System.out.println("Resultado de la evaluación: " + condicional.get(1));
-                return;
+                algunaCondicionVerdadera = true;
+                // No retornamos aquí para permitir que se evalúen otras condiciones si es necesario
             }
         }
         // Si ninguna condición es verdadera, muestra un error
-        System.out.println("Error: Ninguna condición es verdadera en la expresión COND");
+        if (!algunaCondicionVerdadera) {
+            System.out.println("Error: Ninguna condición es verdadera en la expresión COND");
+        }
     }
+
 
 }

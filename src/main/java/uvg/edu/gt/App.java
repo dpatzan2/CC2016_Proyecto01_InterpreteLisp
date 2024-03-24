@@ -20,24 +20,35 @@ public class App {
     }
 
     private static void mostrarMenu() {
-        System.out.println("Menú:");
-        System.out.println("1. Cargar código LISP desde la consola");
-        System.out.println("2. Cargar código LISP desde un archivo");
-        System.out.println("Seleccione una opción:");
+        boolean salir = false;
 
-        int opcion = InputReader.leerEntero();
+        while (!salir) {
+            System.out.println("Menú:");
+            System.out.println("1. Cargar código LISP desde la consola");
+            System.out.println("2. Cargar código LISP desde un archivo");
+            System.out.println("3. Mostrar las variables del entorno");
+            System.out.println("4. Salir del programa");
+            System.out.println("Seleccione una opción:");
+            int opcion = InputReader.leerEntero();
 
-        switch (opcion) {
-            case 1:
-                cargarDesdeConsola();
-                break;
-            case 2:
-                cargarDesdeArchivo();
-                break;
-            default:
-                System.out.println("Opción no válida. Por favor, seleccione una opción válida.");
-                mostrarMenu();
-                break;
+            switch (opcion) {
+                case 1:
+                    cargarDesdeConsola();
+                    break;
+                case 2:
+                    cargarDesdeArchivo();
+                    break;
+                case 3:
+                    SetQ.imprimirEntorno();
+                    break;
+                case 4:
+                    salir = true;
+                    System.out.println("Saliendo del programa...");
+                    break;
+                default:
+                    System.out.println("Opción no válida. Por favor, seleccione una opción válida.");
+                    break;
+            }
         }
     }
 
@@ -224,10 +235,25 @@ public class App {
             List<Double> operandos = new ArrayList<>();
             for (int i = 1; i < tokens.size(); i++) {
                 try {
+                    // Intenta parsear el token como un número decimal
                     operandos.add(Double.parseDouble(tokens.get(i)));
                 } catch (NumberFormatException e) {
-                    System.out.println("Error: Los tokens no son números decimales válidos.");
-                    return;
+                    // Si no se puede parsear como número decimal, busca en las variables
+                    Object valor = SetQ.get(tokens.get(i));
+                    if (valor != null) {
+                        // Si la variable existe, intenta parsear su valor como número decimal
+                        try {
+                            operandos.add(Double.parseDouble(valor.toString()));
+                        } catch (NumberFormatException ex) {
+                            // Si el valor de la variable no es un número decimal válido, muestra un error
+                            System.out.println("Error: El valor de la variable '" + tokens.get(i) + "' no es un número decimal válido.");
+                            return;
+                        }
+                    } else {
+                        // Si la variable no está definida, muestra un error
+                        System.out.println("Error: Variable '" + tokens.get(i) + "' no definida.");
+                        return;
+                    }
                 }
             }
 

@@ -15,6 +15,9 @@ Este proyecto consiste en un intérprete de Lisp implementado en Java. Proporcio
 - **Soporte para predicados:** Incluye predicados como `ATOM`, `LIST`, `EQUAL`, `<`, y `>`.
 - **Interfaz de usuario intuitiva:** La aplicación cuenta con un menú interactivo que facilita la carga y evaluación del código Lisp.
 
+## Diagrama UML
+![Diagrama UML](DiagramaUML.png)
+
 ## Instrucciones de uso
 
 1. **Cargar código desde la consola:**
@@ -86,4 +89,5 @@ Resultado de la evaluación: 5
 - **Ihan Gilberto Alexander Marroquín Sequén (23108)**
 - **Diego Fernando Patzán Marroquín (23525)**
 - **Osman Emanuel de Leon Garcia (23428)**
+
 

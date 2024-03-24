@@ -3,6 +3,7 @@ package uvg.edu.gt;
 import uvg.edu.gt.interpreter.ArithmeticOperations;
 import uvg.edu.gt.interpreter.Conditional;
 import uvg.edu.gt.interpreter.FunctionDefinition;
+import uvg.edu.gt.interpreter.SetQ;
 import uvg.edu.gt.lexer.Lexer;
 import uvg.edu.gt.utils.InputReader;
 import uvg.edu.gt.utils.LispFileReader;
@@ -79,6 +80,31 @@ public class App {
         // Si la lista de tokens ahora está vacía, muestra un error
         if (tokens.isEmpty()) {
             System.out.println("Error: Expresión Lisp vacía");
+            return;
+        }
+
+        // Si el primer token es "setq", asigna un valor a un símbolo en el entorno
+        if (tokens.get(0).equals("setq")) {
+            // Verificar si hay suficientes argumentos para setq
+            if (tokens.size() < 3) {
+                System.out.println("Error: Se requieren al menos dos argumentos para setq");
+                return;
+            }
+
+            // Obtener el nombre del símbolo y el valor a asignar
+            String nombre = tokens.get(1);
+            Object valor;
+            if (tokens.size() == 3) {
+                // Si solo hay tres tokens, el valor es el tercer token
+                valor = tokens.get(2);
+            } else {
+                // Si hay más de tres tokens, el valor es una lista de tokens desde el tercer token hasta el último
+                valor = String.join(" ", tokens.subList(2, tokens.size()));
+            }
+
+            // Asignar el valor al símbolo en el entorno
+            SetQ.setq(nombre, valor);
+            System.out.println("Valor asignado a '" + nombre + "': " + valor);
             return;
         }
 

@@ -9,6 +9,7 @@ import uvg.edu.gt.utils.LispFileReader;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class App {
@@ -310,7 +311,7 @@ public class App {
      */
     private static void evaluarExpresionCond(List<List<Object>> condicionales) {
         for (List<Object> condicional : condicionales) {
-            boolean condicion = Conditional.evaluarPredicado((List<Object>) condicional.get(0));
+            boolean condicion = Conditional.evaluarPredicado(Collections.singletonList(condicional.get(0)));
             if (condicion) {
                 System.out.println("Resultado de la evaluación: " + condicional.get(1));
                 return;

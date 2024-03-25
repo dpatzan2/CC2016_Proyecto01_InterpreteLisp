@@ -1,5 +1,5 @@
 
-# Interpreter de LISP en Java
+#  Interpreter de LISP en Java
 
 Este proyecto consiste en un intérprete de Lisp implementado en Java. Proporciona funcionalidades para cargar y evaluar código Lisp tanto desde la consola como desde archivos, así como también para definir funciones y realizar operaciones aritméticas.
 
@@ -54,7 +54,6 @@ Ingrese el código Lisp:
 Resultado de la evaluación: 5
 ```
 
-<<<<<<< HEAD
 ### Definir variables con setq:
 
 ```lisp
@@ -80,6 +79,10 @@ Resultado de la evaluación: 5
 ; Verificar si 10 es mayor que 5
 (> 10 5)
 ```
+
+## Link del video
+
+- **[ 📽️ Haz clic aquí para ver el video](https://drive.google.com/file/d/1CjSyDlr5i4Lq8RA_skzqWzTouATWGM8G/view?usp=sharing)**
 
 ## Integrantes
 

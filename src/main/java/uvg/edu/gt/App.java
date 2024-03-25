@@ -228,8 +228,7 @@ public class App {
             return;
         }
 
-<<<<<<< HEAD
-=======
+
         // Si la expresión comienza con un paréntesis, eliminamos el primer y último token
         if (tokens.get(0).equals("(") && tokens.get(tokens.size() - 1).equals(")")) {
             tokens = tokens.subList(1, tokens.size() - 1);
@@ -241,7 +240,7 @@ public class App {
             return;
         }
 
->>>>>>> ihan
+
         // Si el primer token es "setq", asigna un valor a un símbolo en el entorno
         if (tokens.get(0).equals("setq")) {
             // Verificar si hay suficientes argumentos para setq

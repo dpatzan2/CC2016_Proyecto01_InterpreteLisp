@@ -54,11 +54,23 @@ Ingrese el código Lisp:
 Resultado de la evaluación: 5
 ```
 
+<<<<<<< HEAD
 ### Definir variables con setq:
 
 ```lisp
 ; Definir una función para calcular el área de un círculo
 (setq num1 10)
+=======
+### Definir y llamar funciones:
+
+```lisp
+; Definir una función para calcular el área de un círculo
+(defun calcular-area-circulo (radio)
+    (* 3.14159 (* radio radio)))
+
+; Llamar a la función para calcular el área de un círculo con radio 5
+(calcular-area-circulo 5)
+>>>>>>> ihan
 ```
 
 ### Utilizar predicados:

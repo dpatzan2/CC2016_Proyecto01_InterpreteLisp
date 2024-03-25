@@ -8,8 +8,8 @@ import java.util.Objects;
  */
 public class LispFunction {
 
-    private final List<String> parametros;
-    private final List<Object> cuerpo;
+    private List<String> parametros;
+    private String cuerpo;  
 
     /**
      * Crea una nueva función LISP con los parámetros y cuerpo especificados.
@@ -17,7 +17,7 @@ public class LispFunction {
      * @param parametros Los nombres de los parámetros de la función.
      * @param cuerpo     La expresión que representa el cuerpo de la función.
      */
-    public LispFunction(List<String> parametros, List<Object> cuerpo) {
+    public LispFunction(List<String> parametros, String cuerpo) {
         this.parametros = parametros;
         this.cuerpo = cuerpo;
     }
@@ -36,7 +36,7 @@ public class LispFunction {
      *
      * @return El cuerpo de la función.
      */
-    public List<Object> getCuerpo() {
+    public String getCuerpo() {
         return cuerpo;
     }
 
@@ -58,6 +58,8 @@ public class LispFunction {
         // Devolver el resultado de la evaluación del cuerpo
         return null; // Implementación de la evaluación del cuerpo de la función
     }
+
+    
 
     /**
      * Compara esta función con otro objeto y verifica si son iguales.

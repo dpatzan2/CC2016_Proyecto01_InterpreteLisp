@@ -97,4 +97,87 @@ public class ArithmeticOperations {
         }
         return modulo;
     }
+
+    public static double operar(String operador, List<Object> operandos) {
+        double resultado = 0;
+        if (operador.equals("+")) {
+            for (Object operando : operandos) {
+                resultado += convertirAValorNumerico(operando);
+            }
+        } else if (operador.equals("-")) {
+            resultado = convertirAValorNumerico(operandos.get(0));
+            for (int i = 1; i < operandos.size(); i++) {
+                resultado -= convertirAValorNumerico(operandos.get(i));
+            }
+        } else if (operador.equals("*")) {
+            resultado = 1;
+            for (Object operando : operandos) {
+                resultado *= convertirAValorNumerico(operando);
+            }
+        } else if (operador.equals("/")) {
+            resultado = convertirAValorNumerico(operandos.get(0));
+            for (int i = 1; i < operandos.size(); i++) {
+                double valor = convertirAValorNumerico(operandos.get(i));
+                if (valor == 0) {
+                    throw new ArithmeticException("División por cero");
+                }
+                resultado /= valor;
+            }
+        }
+        return resultado;
+    }
+
+    private static double convertirAValorNumerico(Object obj) {
+        if (obj instanceof Integer) {
+            return (int) obj;
+        } else if (obj instanceof Double) {
+            return (double) obj;
+        } else {
+            throw new IllegalArgumentException("El objeto no se puede convertir a valor numérico: " + obj);
+        }
+    }
+
+    public static double sumarDoubles(List<Double> numeros) {
+        if (numeros.isEmpty()) {
+            throw new IllegalArgumentException("La lista de números está vacía");
+        }
+        double suma = numeros.get(0);
+        for (int i = 1; i < numeros.size(); i++) {
+            suma += numeros.get(i);
+        }
+        return suma;
+    }
+
+    public static double restarDoubles(List<Double> numeros) {
+        if (numeros.isEmpty()) {
+            throw new IllegalArgumentException("La lista de números está vacía");
+        }
+        double resta = numeros.get(0);
+        for (int i = 1; i < numeros.size(); i++) {
+            resta -= numeros.get(i);
+        }
+        return resta;
+    }
+
+    public static double multiplicarDoubles(List<Double> numeros) {
+        if (numeros.isEmpty()) {
+            throw new IllegalArgumentException("La lista de números está vacía");
+        }
+        double producto = numeros.get(0);
+        for (int i = 1; i < numeros.size(); i++) {
+            producto *= numeros.get(i);
+        }
+        return producto;
+    }
+
+    public static double dividirDoubles(List<Double> numeros) {
+        if (numeros.isEmpty()) {
+            throw new IllegalArgumentException("La lista de números está vacía");
+        }
+        double division = numeros.get(0);
+        for (int i = 1; i < numeros.size(); i++) {
+            division /= numeros.get(i);
+        }
+        return division;
+    }
 }

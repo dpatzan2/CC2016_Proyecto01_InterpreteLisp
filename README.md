@@ -67,9 +67,6 @@ Resultado de la evaluación: 5
 ; Verificar si 'a' es un átomo
 (ATOM 'a)
 
-; Verificar si '(a b c)' es una lista
-(LIST '(a b c))
-
 ; Comparar si 2 y 2 son iguales
 (EQUAL 2 2)
 

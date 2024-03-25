@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.HashMap;
 import java.util.Arrays;
+import java.util.Collections;
 
 public class App {
 
@@ -117,12 +118,19 @@ public class App {
         // Almacenar la nueva función definida
         funcionesDefinidas.put(nombreFuncion, nuevaFuncion);
     
-        // Ejecutar la función recién definida
-        Object resultado = ejecutar(Arrays.asList(nombreFuncion)); // Pasar el nombre de la función como una lista de una sola cadena
-        if (resultado != null) {
-            System.out.println("Resultado de la función " + nombreFuncion + ": " + resultado.toString());
+        // Extraer los valores de los parámetros de la expresión a evaluar
+        List<Object> args = new ArrayList<>();
+        for (int i = 1; i < parametros.size() + 1; i++) {
+            args.add(Character.toString((char) ('a' + i))); // Simplemente agregamos letras del alfabeto como valores de ejemplo
         }
+    
+        // Ejecutar la función recién definida con los argumentos extraídos
+        Object resultado = nuevaFuncion.evaluar(args);
+        System.out.println("Resultado de la función " + nombreFuncion + ": " + resultado);
     }
+    
+    
+    
     
     
     public static Object ejecutar(List<String> cuerpo) {
@@ -132,66 +140,88 @@ public class App {
     
 
     private static Object evaluarExpresion(List<String> expresion) {
-        String funcion = expresion.get(0);
-        List<Object> argumentos = new ArrayList<>();
+        if (expresion.isEmpty()) {
+            throw new IllegalArgumentException("La expresión está vacía");
+        }
     
-        for (int i = 1; i < expresion.size(); i++) {
-            if (expresion.get(i).startsWith("(")) {
-                // Es una subexpresión, evaluarla recursivamente
-                List<String> subexpresion = new ArrayList<>();
-                int balance = 0;
+        String operador = expresion.get(0);
     
-                do {
-                    String token = expresion.get(i);
-                    subexpresion.add(token);
+        if ("+-*/".contains(operador)) {
+            List<Double> operandos = new ArrayList<>();
+            for (int i = 1; i < expresion.size(); i++) {
+                if (expresion.get(i).startsWith("(")) {
+                    // Es una subexpresión, evaluarla recursivamente
+                    List<String> subexpresion = new ArrayList<>();
+                    int balance = 0;
     
-                    for (char c : token.toCharArray()) {
-                        if (c == '(') {
-                            balance++;
-                        } else if (c == ')') {
-                            balance--;
+                    do {
+                        String token = expresion.get(i);
+                        subexpresion.add(token);
+    
+                        for (char c : token.toCharArray()) {
+                            if (c == '(') {
+                                balance++;
+                            } else if (c == ')') {
+                                balance--;
+                            }
                         }
-                    }
     
-                    i++;
-                } while (balance > 0);
+                        i++;
+                    } while (balance > 0);
     
-                argumentos.add(evaluarExpresion(subexpresion));
-                i--;
-            } else {
-                // Es un valor literal
-                argumentos.add(expresion.get(i));
+                    operandos.add(Double.parseDouble(evaluarExpresion(subexpresion).toString()));
+                    i--;
+                } else {
+                    // Es un valor literal
+                    operandos.add(Double.parseDouble(expresion.get(i)));
+                }
             }
-        }
     
-        if (funcionesDefinidas.containsKey(funcion)) {
-            // Es una llamada a una función definida
-            LispFunction lispFunction = funcionesDefinidas.get(funcion);
-            return lispFunction.evaluar(argumentos);
+            // Realizar la operación correspondiente
+            double resultado;
+            switch (operador) {
+                case "+":
+                    resultado = ArithmeticOperations.sumarDoubles(operandos);
+                    break;
+                case "-":
+                    resultado = ArithmeticOperations.restarDoubles(operandos);
+                    break;
+                case "*":
+                    resultado = ArithmeticOperations.multiplicarDoubles(operandos);
+                    break;
+                case "/":
+                    resultado = ArithmeticOperations.dividirDoubles(operandos);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Operador no reconocido: " + operador);
+            }
+    
+            return resultado;
         } else {
-            // No se encontró la función
-            throw new RuntimeException("La función '" + funcion + "' no está definida.");
+            // No es un operador aritmético, continuar con la evaluación
+            // Aquí puedes agregar lógica adicional para otros tipos de expresiones
+            // como llamadas a funciones u operaciones lógicas, según sea necesario.
+            throw new IllegalArgumentException("Operación no reconocida: " + operador);
         }
     }
-    
 
-    private static LispFunction interpretarDefinicionFuncion(String nombreFuncion, List<String> parametros, List<String> cuerpo) {
-        // Crear una instancia de LispFunction
-        LispFunction nuevaFuncion = new LispFunction(parametros, String.join("\n", cuerpo)); 
     
-        // Ejecutar automáticamente la función
-        Object resultado = ejecutar(Arrays.asList(nombreFuncion)); // Pasar el nombre de la función como una lista de una sola cadena
-        if (resultado != null) {
-            System.out.println("Resultado de la función " + nombreFuncion + ": " + resultado.toString());
-        }
-    
-        return nuevaFuncion;
-    }
 
     private static void evaluarCodigoLisp(String codigoLisp) {
         List<String> tokens = Lexer.analizar(codigoLisp);
 
         // Si la lista de tokens está vacía, muestra un error
+        if (tokens.isEmpty()) {
+            System.out.println("Error: Expresión Lisp vacía");
+            return;
+        }
+
+        // Si la expresión comienza con un paréntesis, eliminamos el primer y último token
+        if (tokens.get(0).equals("(") && tokens.get(tokens.size() - 1).equals(")")) {
+            tokens = tokens.subList(1, tokens.size() - 1);
+        }
+
+        // Si la lista de tokens ahora está vacía, muestra un error
         if (tokens.isEmpty()) {
             System.out.println("Error: Expresión Lisp vacía");
             return;
@@ -435,6 +465,54 @@ public class App {
                 // Si no es una llamada de función válida, muestra un error
                 System.out.println("Error: Función no definida - " + nombreFuncion);
             }
+        }
+
+    // Si el primer token es una definición de función, la procesamos
+    if (tokens.get(0).equals("(defun")) {
+        // Extraer nombre de la función, parámetros y cuerpo
+        String nombreFuncion = tokens.get(1);
+        List<String> parametros = Arrays.asList(tokens.get(2).substring(1).split("\\s+"));
+        List<String> cuerpo = tokens.subList(3, tokens.size() - 1);
+
+        // Procesar la definición de la función
+        procesarDefinicion(nombreFuncion, parametros, cuerpo);
+    } else {
+        // Si no es una definición de función, intentamos evaluar como llamada de función
+        String nombreFuncion = tokens.get(0);
+        if (funcionesDefinidas.containsKey(nombreFuncion)) {
+            // Si es una llamada de función, obtenemos la función definida
+            LispFunction funcion = funcionesDefinidas.get(nombreFuncion);
+            
+            // Preparamos los argumentos para evaluar la función
+            List<Object> args = new ArrayList<>();
+            for (int i = 1; i < tokens.size(); i++) {
+                if (tokens.get(i).equals("(")) {
+                    // Encontramos una expresión dentro de paréntesis, evaluamos recursivamente
+                    StringBuilder subExpresion = new StringBuilder();
+                    int nivelParentesis = 1;
+                    while (nivelParentesis != 0 && i + 1 < tokens.size()) {
+                        i++;
+                        String token = tokens.get(i);
+                        if (token.equals("(")) {
+                            nivelParentesis++;
+                        } else if (token.equals(")")) {
+                            nivelParentesis--;
+                        }
+                        subExpresion.append(token).append(" ");
+                    }
+                    args.add(subExpresion.toString().trim());
+                } else {
+                    args.add(tokens.get(i));
+                }
+            }
+
+            // Evaluar la llamada de función
+            Object resultado = funcion.evaluar(args);
+            System.out.println("Resultado de la evaluación: " + resultado);
+        } else {
+            // Si no es una función definida, mostramos un error
+            System.out.println("Error: Función no definida - " + nombreFuncion);
+        }
         }
     }
 

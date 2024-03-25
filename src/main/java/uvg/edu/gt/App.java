@@ -3,14 +3,21 @@ package uvg.edu.gt;
 import uvg.edu.gt.interpreter.ArithmeticOperations;
 import uvg.edu.gt.interpreter.FunctionDefinition;
 import uvg.edu.gt.lexer.Lexer;
+import uvg.edu.gt.model.LispFunction;
 import uvg.edu.gt.utils.InputReader;
 import uvg.edu.gt.utils.LispFileReader;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 
 public class App {
+
+    private static final Map<String, LispFunction> funcionesDefinidas = new HashMap<>();
 
     public static void main(String[] args) {
         mostrarMenu();
@@ -45,19 +52,127 @@ public class App {
     }
 
     private static void cargarDesdeArchivo() {
+        Scanner scanner = new Scanner(System.in);
         System.out.println("Ingrese la ruta del archivo:");
-        String rutaArchivo = InputReader.leerLinea();
+        String rutaArchivo = scanner.nextLine();
 
         try {
             List<String> lineas = LispFileReader.leerArchivo(rutaArchivo);
-            StringBuilder sb = new StringBuilder();
+
+            String nombreFuncion = null;
+            List<String> parametros = new ArrayList<>();
+            List<String> cuerpo = new ArrayList<>();
+
             for (String linea : lineas) {
-                sb.append(linea).append("\n");
+                if (linea.trim().startsWith("(defun")) {
+                    if (nombreFuncion != null) {
+                        // Ya se encontró una definición previa, procesarla
+                        procesarDefinicion(nombreFuncion, parametros, cuerpo);
+                        // Reiniciar las listas para la próxima definición
+                        parametros.clear();
+                        cuerpo.clear();
+                    }
+                    // Extraer el nombre de la función y los parámetros
+                    nombreFuncion = linea.trim().substring(7).split("\\s+")[0];
+                    parametros.addAll(Arrays.asList(linea.trim().substring(7).split("\\s+")[1].replaceAll("\\)", "").split("\\(")[1].split(" ")));
+                } else if (nombreFuncion != null) {
+                    cuerpo.add(linea.trim());
+                }
             }
-            evaluarCodigoLisp(sb.toString());
+
+            // Procesar la última definición
+            if (nombreFuncion != null) {
+                procesarDefinicion(nombreFuncion, parametros, cuerpo);
+            }
+
+            System.out.println("Funciones definidas:");
+            for (String nombre : funcionesDefinidas.keySet()) {
+                System.out.println(nombre);
+            }
         } catch (IOException e) {
             System.out.println("Error al leer el archivo: " + e.getMessage());
         }
+    }
+
+    private static void procesarDefinicion(String nombreFuncion, List<String> parametros, List<String> cuerpo) {
+        // Convertir el cuerpo del texto Lisp a una cadena
+        String cuerpoComoCadena = String.join("\n", cuerpo);
+    
+        // Crear una instancia de LispFunction
+        LispFunction nuevaFuncion = new LispFunction(parametros, cuerpoComoCadena);
+    
+        // Almacenar la nueva función definida
+        funcionesDefinidas.put(nombreFuncion, nuevaFuncion);
+    
+        // Ejecutar la función recién definida
+        Object resultado = ejecutar(Arrays.asList(nombreFuncion)); // Pasar el nombre de la función como una lista de una sola cadena
+        if (resultado != null) {
+            System.out.println("Resultado de la función " + nombreFuncion + ": " + resultado.toString());
+        }
+    }
+    
+    
+    public static Object ejecutar(List<String> cuerpo) {
+        // Evaluar la expresión correspondiente
+        return evaluarExpresion(cuerpo);
+    }    
+    
+
+    private static Object evaluarExpresion(List<String> expresion) {
+        String funcion = expresion.get(0);
+        List<Object> argumentos = new ArrayList<>();
+    
+        for (int i = 1; i < expresion.size(); i++) {
+            if (expresion.get(i).startsWith("(")) {
+                // Es una subexpresión, evaluarla recursivamente
+                List<String> subexpresion = new ArrayList<>();
+                int balance = 0;
+    
+                do {
+                    String token = expresion.get(i);
+                    subexpresion.add(token);
+    
+                    for (char c : token.toCharArray()) {
+                        if (c == '(') {
+                            balance++;
+                        } else if (c == ')') {
+                            balance--;
+                        }
+                    }
+    
+                    i++;
+                } while (balance > 0);
+    
+                argumentos.add(evaluarExpresion(subexpresion));
+                i--;
+            } else {
+                // Es un valor literal
+                argumentos.add(expresion.get(i));
+            }
+        }
+    
+        if (funcionesDefinidas.containsKey(funcion)) {
+            // Es una llamada a una función definida
+            LispFunction lispFunction = funcionesDefinidas.get(funcion);
+            return lispFunction.evaluar(argumentos);
+        } else {
+            // No se encontró la función
+            throw new RuntimeException("La función '" + funcion + "' no está definida.");
+        }
+    }
+    
+
+    private static LispFunction interpretarDefinicionFuncion(String nombreFuncion, List<String> parametros, List<String> cuerpo) {
+        // Crear una instancia de LispFunction
+        LispFunction nuevaFuncion = new LispFunction(parametros, String.join("\n", cuerpo)); 
+    
+        // Ejecutar automáticamente la función
+        Object resultado = ejecutar(Arrays.asList(nombreFuncion)); // Pasar el nombre de la función como una lista de una sola cadena
+        if (resultado != null) {
+            System.out.println("Resultado de la función " + nombreFuncion + ": " + resultado.toString());
+        }
+    
+        return nuevaFuncion;
     }
 
     private static void evaluarCodigoLisp(String codigoLisp) {
